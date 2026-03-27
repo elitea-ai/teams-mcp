@@ -1,0 +1,32 @@
+[project]
+name = "teams-mcp"
+version = "0.1.0"
+description = "MS Teams MCP server \u2014 lightweight Microsoft Graph API integration for AI agents"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [{name = "ELITEA AI", email = "info@elitea.ai"}]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Communications :: Chat",
+    "License :: OSI Approved :: MIT License",
+]
+dependencies = [
+    "httpx>=0.27",
+    "msal>=1.28",
+    "mcp[cli]>=1.0",
+]
+
+[project.scripts]
+teams-mcp = "teams_mcp.server:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
