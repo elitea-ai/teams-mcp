@@ -1,8 +1,8 @@
-# teams-mcp
+# mcp-server-teams
 
-MS Teams MCP server — lightweight [Microsoft Graph API](https://learn.microsoft.com/en-us/graph/overview) integration for AI agents.
+A Model Context Protocol server providing tools to read and send Microsoft Teams messages.
 
-Authenticate with your personal Microsoft account using device-code flow (no admin consent required) and give any MCP-compatible client — Claude Desktop, Cursor, Octo, or your own agent — read/write access to Teams chats, teams, and channels.
+Authenticate with your Microsoft account using device-code flow and give any MCP-compatible client — Claude Desktop, Cursor, VS Code, or your own agent — read/write access to Teams chats, teams, and channels.
 
 ## Features
 
@@ -24,10 +24,16 @@ Authenticate with your personal Microsoft account using device-code flow (no adm
 
 ```bash
 # Run directly with uvx (no install needed)
-uvx teams-mcp
+uvx mcp-server-teams
 ```
 
 Then call `login` from your MCP client. You'll receive a code — enter it at the URL in your browser. After that, call `login-complete` to finish authentication.
+
+### CLI Options
+
+```bash
+mcp-server-teams --client-id YOUR_APP_ID --tenant-id YOUR_TENANT_ID
+```
 
 ## MCP Client Configuration
 
@@ -38,10 +44,9 @@ Add to your MCP config:
 ```json
 {
   "mcpServers": {
-    "msteams": {
-      "type": "stdio",
+    "teams": {
       "command": "uvx",
-      "args": ["teams-mcp"]
+      "args": ["mcp-server-teams"]
     }
   }
 }
@@ -52,14 +57,26 @@ Add to your MCP config:
 ```json
 {
   "mcpServers": {
-    "msteams": {
-      "type": "stdio",
+    "teams": {
       "command": "uvx",
-      "args": ["teams-mcp"],
+      "args": ["mcp-server-teams"],
       "env": {
         "TEAMS_CLIENT_ID": "your-app-client-id",
         "TEAMS_TENANT_ID": "your-tenant-id"
       }
+    }
+  }
+}
+```
+
+### With CLI arguments
+
+```json
+{
+  "mcpServers": {
+    "teams": {
+      "command": "uvx",
+      "args": ["mcp-server-teams", "--client-id", "your-app-id", "--tenant-id", "your-tenant-id"]
     }
   }
 }
@@ -76,7 +93,7 @@ Add to your MCP config:
 
 ## Authentication
 
-The server uses [device code flow](https://learn.microsoft.com/en-us/entra/identity-platform/v2-oauth2-device-code) — a two-step process designed for devices without a browser:
+The server uses [device code flow](https://learn.microsoft.com/en-us/entra/identity-platform/v2-oauth2-device-code) — a two-step process designed for headless environments:
 
 1. Call `login` → receive a code and URL
 2. Open the URL in any browser, enter the code, sign in
@@ -99,7 +116,8 @@ All scopes use **delegated** (user-consent) permissions — no admin approval ne
 ```bash
 git clone https://github.com/elitea-ai/teams-mcp.git
 cd teams-mcp
-pip install -e ".[dev]"
+uv sync --dev
+uv run pytest
 ```
 
 ## License
